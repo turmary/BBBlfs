@@ -21,7 +21,7 @@ is_online(){
 }
 
 usage(){
-	echo "Usage: $0 [ debian | ubuntu | input.img.xz ]"
+	echo "Usage: $0 [ input.img.xz ]"
 	echo "Supported images are just in .img.xz format."
 	exit 1
 }
@@ -96,7 +96,7 @@ then
 		exit $rc
 	fi
 
-	echo -n "Waiting for the BeagleBone Black to be mounted"
+	echo -n "Waiting for the BeagleBone Black usb flash boot..."
 	for i in {1..12}
 	do
 		echo -n "."
@@ -122,31 +122,11 @@ then
 		exit 1
 	fi
 
-	read -p "Are you sure the BeagleBone Black is mounted at /dev/$bbb?[yY]" -n 1 -r
-	echo
+	echo "Your image $input"
+	echo "Your BeagleBone emmc is  /dev/$bbb, Flash it now"
+	xzcat $input | sudo dd of=/dev/$bbb  status=progress
+	sync
+	sync
 
-	if [[ $REPLY =~ ^[Yy]$ ]];
-		parts=($(ls /dev | grep "$bbb[1,2]"))
-		then
-			for index in ${!parts[*]}
-			do
-				sudo umount /dev/${parts[$index]}
-		done
-		echo "Flashing now, be patient. It will take ~5 minutes!"
-		echo
-		if [ \( "$input" = "debian" -o "$input" = "ubuntu" \) ]
-		then
-			sudo ./bbb-armhf.sh $bbb $input
-		else
-			xzcat $input | sudo dd of=/dev/$bbb bs=1M
-			echo
-			echo "Resizing partitons now, just as a saefty measure if you flash 2GB image on 4GB board!"
-			echo -e "d\n2\nn\np\n2\n\n\nw" | sudo fdisk /dev/$bbb > /dev/null
-		fi
-		sudo e2fsck -f /dev/${bbb}2
-		sudo resize2fs /dev/${bbb}2
-		echo
-        echo "Please remove power from your board and plug it again."\
-				"You will boot in the new OS!"
-	fi
+    echo "Please remove power from your board and plug it again. You will boot in the new OS!"
 fi
