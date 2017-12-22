@@ -10,7 +10,7 @@ This project provides a way to flash a BeagleBone Black via USB from a Linux mac
 Build
 ----------
 ```
-sudo apt-get install libusb-1.0-0-dev automake
+sudo apt-get install libusb-1.0-0-dev automake pkg-config libtool
 ./autogen.sh
 ./configure
 make

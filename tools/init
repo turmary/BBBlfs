@@ -3,7 +3,7 @@
 /bin/mount -t proc none /proc
 /bin/mount -t sysfs sysfs /sys
 mdev -s
-modprobe g_mass_storage file=/dev/mmcblk0 iSerialNumber=42 iManufacturer=Circuitco  iProduct=BeagleBone-Black
+modprobe g_mass_storage file=/dev/mmcblk1 iSerialNumber=42 iManufacturer=Circuitco  iProduct=BeagleBone-Black
 
 cat <<'EOF'
 
